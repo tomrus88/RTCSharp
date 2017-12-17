@@ -86,7 +86,6 @@ namespace OpenLibSys
         [DllImport("kernel32")]
         public extern static IntPtr LoadLibrary(string lpFileName);
 
-
         [DllImport("kernel32", SetLastError = true)]
         private static extern bool FreeLibrary(IntPtr hModule);
 
