@@ -1,0 +1,75 @@
+﻿<Window x:Class="RTCSharp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RTCSharp"
+        mc:Ignorable="d"
+        Title="Ryzen Timing Checker 2.0" Height="640" Width="530" ResizeMode="NoResize">
+    <Grid>
+        <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+            <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="70">
+                <local:TextBoxLabel LabelText="MEMCLK Ratio" Value="{Binding Path=MEMCLK}"/>
+                <local:TextBoxLabel LabelText="Cmd2t" Value="{Binding Path=Cmd2T}" ToolTip="True - 2T, False - 1T"/>
+                <local:TextBoxLabel LabelText="GearDownMode" Value="{Binding Path=GDM}" ToolTip="True - Enabled, False - Disabled"/>
+                <local:TextBoxLabel LabelText="BankGroupSwap" Value="{Binding Path=BGS}" ToolTip="True - Enabled, False - Disabled"/>
+                <local:TextBoxLabel LabelText="BankGroupSwapAlt" Value="{Binding Path=BGSA}" ToolTip="True - Enabled, False - Disabled"/>
+            </WrapPanel>
+            <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="515">
+                <local:TextBoxLabel LabelText="tCL" Value="{Binding Path=tCL}"/>
+                <local:TextBoxLabel LabelText="tRCDWR" Value="{Binding Path=tRCDWR}"/>
+                <local:TextBoxLabel LabelText="tRCDRD" Value="{Binding Path=tRCDRD}"/>
+                <local:TextBoxLabel LabelText="tRP" Value="{Binding Path=tRP}"/>
+                <local:TextBoxLabel LabelText="tRAS" Value="{Binding Path=tRAS}"/>
+                <local:TextBoxLabel LabelText="tRC" Value="{Binding Path=tRC}"/>
+                <local:TextBoxLabel LabelText="tRRDS" Value="{Binding Path=tRRDS}"/>
+                <local:TextBoxLabel LabelText="tRRDL" Value="{Binding Path=tRRDL}"/>
+                <local:TextBoxLabel LabelText="tFAW" Value="{Binding Path=tFAW}"/>
+                <local:TextBoxLabel LabelText="tFAWDLR" Value="{Binding Path=tFAWDLR}"/>
+                <local:TextBoxLabel LabelText="tFAWSLR" Value="{Binding Path=tFAWSLR}"/>
+                <local:TextBoxLabel LabelText="tWTRS" Value="{Binding Path=tWTRS}"/>
+                <local:TextBoxLabel LabelText="tWTRL" Value="{Binding Path=tWTRL}"/>
+                <local:TextBoxLabel LabelText="tWR" Value="{Binding Path=tWR}"/>
+                <local:TextBoxLabel LabelText="tRCPage" Value="{Binding Path=tRCPage}"/>
+                <local:TextBoxLabel LabelText="tRDRDSCL" Value="{Binding Path=tRDRDSCL}"/>
+                <local:TextBoxLabel LabelText="tWRWRSCL" Value="{Binding Path=tWRWRSCL}"/>
+
+                <local:TextBoxLabel LabelText="tRFC" Value="{Binding Path=tRFC}"/>
+                <local:TextBoxLabel LabelText="tRFC (ns)" Value="{Binding Path=tRFCCT}"/>
+                <local:TextBoxLabel LabelText="tCWL" Value="{Binding Path=tCWL}"/>
+                <local:TextBoxLabel LabelText="tRTP" Value="{Binding Path=tRTP}"/>
+                <local:TextBoxLabel LabelText="tRDWR" Value="{Binding Path=tRDWR}"/>
+                <local:TextBoxLabel LabelText="tWRRD" Value="{Binding Path=tWRRD}"/>
+                <local:TextBoxLabel LabelText="tWRWRSC" Value="{Binding Path=tWRWRSC}"/>
+                <local:TextBoxLabel LabelText="tWRWRSD" Value="{Binding Path=tWRWRSD}"/>
+                <local:TextBoxLabel LabelText="tWRWRDD" Value="{Binding Path=tWRWRDD}"/>
+                <local:TextBoxLabel LabelText="tRDRDSC" Value="{Binding Path=tRDRDSC}"/>
+                <local:TextBoxLabel LabelText="tRDRDSD" Value="{Binding Path=tRDRDSD}"/>
+                <local:TextBoxLabel LabelText="tRDRDDD" Value="{Binding Path=tRDRDDD}"/>
+                <local:TextBoxLabel LabelText="tCKE" Value="{Binding Path=tCKE}"/>
+                <local:TextBoxLabel LabelText="tRPPB" Value="{Binding Path=tRPPB}"/>
+                <local:TextBoxLabel LabelText="tRCPB" Value="{Binding Path=tRCPB}"/>
+                <local:TextBoxLabel LabelText="tRRDDLR" Value="{Binding Path=tRRDDLR}"/>
+                <local:TextBoxLabel LabelText="tRDRDBAN" Value="{Binding Path=tRDRDBAN}" ToolTip="0 - Disabled, 1 - Ban 2, 2 - Ban 2&amp;3"/>
+
+                <local:TextBoxLabel LabelText="tRDRDSCDLR" Value="{Binding Path=tRDRDSCDLR}"/>
+                <local:TextBoxLabel LabelText="tWRWRBAN" Value="{Binding Path=tWRWRBAN}" ToolTip="0 - Disabled, 1 - Ban 2, 2 - Ban 2&amp;3"/>
+                <local:TextBoxLabel LabelText="tWRWRSCDLR" Value="{Binding Path=tWRWRSCDLR}"/>
+                <local:TextBoxLabel LabelText="tWRRDSCDLR" Value="{Binding Path=tWRRDSCDLR}"/>
+                <local:TextBoxLabel LabelText="tREF" Value="{Binding Path=tREF}"/>
+                <local:TextBoxLabel LabelText="tREF (ns)" Value="{Binding Path=tREFCT}"/>
+                <local:TextBoxLabel LabelText="tMOD" Value="{Binding Path=tMOD}"/>
+                <local:TextBoxLabel LabelText="tMODPDA" Value="{Binding Path=tMODPDA}"/>
+                <local:TextBoxLabel LabelText="tMRD" Value="{Binding Path=tMRD}"/>
+                <local:TextBoxLabel LabelText="tMRDPDA" Value="{Binding Path=tMRDPDA}"/>
+                <local:TextBoxLabel LabelText="tSTAG" Value="{Binding Path=tSTAG}"/>
+                <local:TextBoxLabel LabelText="tPHYWRD" Value="{Binding Path=tPHYWRD}"/>
+                <local:TextBoxLabel LabelText="tPHYWRL" Value="{Binding Path=tPHYWRLAT}"/>
+                <local:TextBoxLabel LabelText="tPHYRDL" Value="{Binding Path=tPHYRDLAT}"/>
+                <local:TextBoxLabel LabelText="tRDDATA" Value="{Binding Path=tRDDATA}"/>
+                <local:TextBoxLabel LabelText="tSTAGLR" Value="{Binding Path=tSTAGLR}" ToolTip="0- Disabled"/>
+                <local:TextBoxLabel LabelText="tWRMPR" Value="{Binding Path=tWRMPR}"/>
+            </WrapPanel>
+        </StackPanel>
+    </Grid>
+</Window>
