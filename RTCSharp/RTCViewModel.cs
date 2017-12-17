@@ -90,15 +90,15 @@ namespace RTCSharp
             }
 
             this.BGS = BGS != 2271560481;
-            this.BGSA = BGS != 286328817;
+            this.BGSA = BGSA != 286328817;
 
             Preamble2T = (DramConfiguration & 0x1000) >> 12 != 0;
             GDM = (DramConfiguration & 0x800) >> 11 != 0;
             Cmd2T = (DramConfiguration & 0x400) >> 10 != 0;
 
             MEMCLK = DramConfiguration & 0x7F;
-            float MEMCLKTRxx = (MEMCLK / 3.0f) * 100;
-            MEMCLK = ((MEMCLK / 3) * 200);
+            float MEMCLKTRxx = MEMCLK / 3.0f * 100;
+            MEMCLK = (uint)(MEMCLK / 3.0f * 200);
 
             tRCDWR = (DramTiming1 & 0x3F000000) >> 24;
             tRCDRD = (DramTiming1 & 0x3F0000) >> 16;
