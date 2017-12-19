@@ -9,7 +9,7 @@ namespace RTCSharp
         private Ols ols;
 
         private const bool SMUSlow = false;
-        private int SMUDelay = SMUSlow ? 60 : 20;
+        private int SMUDelay = SMUSlow ? 60 : 10;
 
         public RTCViewModel()
         {
@@ -40,36 +40,38 @@ namespace RTCSharp
             uint SMUORG = ols.ReadPciConfigDword(0x00, 0xB8);
             Thread.Sleep(SMUDelay);
 
+            uint someOffset = ReadDword(0x50200) == 0x300 ? 0x100000u : 0x0u;
+
             // Read data
-            uint BGS = ReadDword(0x00050058);
-            uint BGSA = ReadDword(0x000500D0);
+            uint BGS = ReadDword(0x00050058 + someOffset);
+            uint BGSA = ReadDword(0x000500D0 + someOffset);
 
-            uint DramConfiguration = ReadDword(0x00050200);
+            uint DramConfiguration = ReadDword(0x00050200 + someOffset);
 
-            uint DramTiming1 = ReadDword(0x00050204);
-            uint DramTiming2 = ReadDword(0x00050208);
-            uint DramTiming3 = ReadDword(0x0005020C);
-            uint DramTiming4 = ReadDword(0x00050210);
-            uint DramTiming5 = ReadDword(0x00050214);
-            uint DramTiming6 = ReadDword(0x00050218);
-            uint DramTiming7 = ReadDword(0x0005021C);
-            uint DramTiming8 = ReadDword(0x00050220);
-            uint DramTiming9 = ReadDword(0x00050224);
-            uint DramTiming10 = ReadDword(0x00050228);
+            uint DramTiming1 = ReadDword(0x00050204 + someOffset);
+            uint DramTiming2 = ReadDword(0x00050208 + someOffset);
+            uint DramTiming3 = ReadDword(0x0005020C + someOffset);
+            uint DramTiming4 = ReadDword(0x00050210 + someOffset);
+            uint DramTiming5 = ReadDword(0x00050214 + someOffset);
+            uint DramTiming6 = ReadDword(0x00050218 + someOffset);
+            uint DramTiming7 = ReadDword(0x0005021C + someOffset);
+            uint DramTiming8 = ReadDword(0x00050220 + someOffset);
+            uint DramTiming9 = ReadDword(0x00050224 + someOffset);
+            uint DramTiming10 = ReadDword(0x00050228 + someOffset);
             // 11?
-            uint DramTiming12 = ReadDword(0x00050230);
-            uint DramTiming13 = ReadDword(0x00050234);
-            uint DramTiming20 = ReadDword(0x00050250);
-            uint DramTiming21 = ReadDword(0x00050254);
-            uint DramTiming22 = ReadDword(0x00050258);
+            uint DramTiming12 = ReadDword(0x00050230 + someOffset);
+            uint DramTiming13 = ReadDword(0x00050234 + someOffset);
+            uint DramTiming20 = ReadDword(0x00050250 + someOffset);
+            uint DramTiming21 = ReadDword(0x00050254 + someOffset);
+            uint DramTiming22 = ReadDword(0x00050258 + someOffset);
 
-            uint tRFCTiming0 = ReadDword(0x00050260);
-            uint tRFCTiming1 = ReadDword(0x00050264);
+            uint tRFCTiming0 = ReadDword(0x00050260 + someOffset);
+            uint tRFCTiming1 = ReadDword(0x00050264 + someOffset);
 
-            uint tSTAGTiming0 = ReadDword(0x00050270);
-            uint tSTAGTiming1 = ReadDword(0x00050274);
+            uint tSTAGTiming0 = ReadDword(0x00050270 + someOffset);
+            uint tSTAGTiming1 = ReadDword(0x00050274 + someOffset);
 
-            uint DramTiming35 = ReadDword(0x0005028C);
+            uint DramTiming35 = ReadDword(0x0005028C + someOffset);
 
             uint tRFCTiming, tSTAGTiming;
 
@@ -89,8 +91,8 @@ namespace RTCSharp
                 tSTAGTiming = tSTAGTiming0;
             }
 
-            this.BGS = BGS != 2271560481;
-            this.BGSA = BGSA != 286328817;
+            this.BGS = BGS != 0x87654321;
+            this.BGSA = BGSA != 0x111107F1;
 
             Preamble2T = (DramConfiguration & 0x1000) >> 12 != 0;
             GDM = (DramConfiguration & 0x800) >> 11 != 0;
