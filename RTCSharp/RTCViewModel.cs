@@ -17,13 +17,13 @@ namespace RTCSharp
 
             Ols.OlsStatus status = ols.Status;
 
-            if (status != Ols.OlsStatus.NO_ERROR)
-                throw new ApplicationException(string.Format("The driver failed to initialize: {0}!", status));
-
             Ols.OlsDllStatus dllStatus = ols.DllStatus;
 
+            if (status != Ols.OlsStatus.NO_ERROR)
+                throw new ApplicationException(string.Format("OlsStatus error:\nstatus {0}\ndllStatus {1}", status, dllStatus));
+
             if (dllStatus != Ols.OlsDllStatus.OLS_DLL_NO_ERROR)
-                throw new ApplicationException(string.Format("OLS DLL Status: {0}!", dllStatus));
+                throw new ApplicationException(string.Format("OlsDllStatus error:\nstatus {0}\ndllStatus {1}", status, dllStatus));
 
             uint eax = 0, ebx = 0, ecx = 0, edx = 0;
 

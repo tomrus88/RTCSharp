@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace RTCSharp
 {
@@ -13,7 +14,15 @@ namespace RTCSharp
         {
             InitializeComponent();
 
-            model = new RTCViewModel();
+            try
+            {
+                model = new RTCViewModel();
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(string.Format("Driver initialization error:\n{0}", exc.Message), "Fatal Error!");
+                Close();
+            }
 
             DataContext = model;
         }
