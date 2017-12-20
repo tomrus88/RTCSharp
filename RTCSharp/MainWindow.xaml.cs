@@ -8,7 +8,7 @@ namespace RTCSharp
     /// </summary>
     public partial class MainWindow : Window
     {
-        RTCViewModel model;
+        private RTCViewModel model;
 
         public MainWindow()
         {

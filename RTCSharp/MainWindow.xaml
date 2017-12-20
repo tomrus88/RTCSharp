@@ -10,10 +10,10 @@
         <StackPanel Orientation="Vertical" Margin="5,5,5,5">
             <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="70">
                 <local:TextBoxLabel LabelText="MEMCLK Ratio" Value="{Binding Path=MEMCLK}"/>
-                <local:TextBoxLabel LabelText="Cmd2t" Value="{Binding Path=Cmd2T}" ToolTip="True - 2T, False - 1T"/>
-                <local:TextBoxLabel LabelText="GearDownMode" Value="{Binding Path=GDM}" ToolTip="True - Enabled, False - Disabled"/>
-                <local:TextBoxLabel LabelText="BankGroupSwap" Value="{Binding Path=BGS}" ToolTip="True - Enabled, False - Disabled"/>
-                <local:TextBoxLabel LabelText="BankGroupSwapAlt" Value="{Binding Path=BGSA}" ToolTip="True - Enabled, False - Disabled"/>
+                <local:TextBoxLabel LabelText="Cmd2t" Value="{Binding Path=CmdRate}"/>
+                <local:TextBoxLabel LabelText="GearDownMode" Value="{Binding Path=GDM_Display}"/>
+                <local:TextBoxLabel LabelText="BankGroupSwap" Value="{Binding Path=BGS_Display}"/>
+                <local:TextBoxLabel LabelText="BankGroupSwapAlt" Value="{Binding Path=BGSA_Display}"/>
             </WrapPanel>
             <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="515">
                 <local:TextBoxLabel LabelText="tCL" Value="{Binding Path=tCL}"/>
@@ -50,10 +50,10 @@
                 <local:TextBoxLabel LabelText="tRPPB" Value="{Binding Path=tRPPB}"/>
                 <local:TextBoxLabel LabelText="tRCPB" Value="{Binding Path=tRCPB}"/>
                 <local:TextBoxLabel LabelText="tRRDDLR" Value="{Binding Path=tRRDDLR}"/>
-                <local:TextBoxLabel LabelText="tRDRDBAN" Value="{Binding Path=tRDRDBAN}" ToolTip="0 - Disabled, 1 - Ban 2, 2 - Ban 2&amp;3"/>
+                <local:TextBoxLabel LabelText="tRDRDBAN" Value="{Binding Path=tRDRDBAN_Display}"/>
 
                 <local:TextBoxLabel LabelText="tRDRDSCDLR" Value="{Binding Path=tRDRDSCDLR}"/>
-                <local:TextBoxLabel LabelText="tWRWRBAN" Value="{Binding Path=tWRWRBAN}" ToolTip="0 - Disabled, 1 - Ban 2, 2 - Ban 2&amp;3"/>
+                <local:TextBoxLabel LabelText="tWRWRBAN" Value="{Binding Path=tWRWRBAN_Display}"/>
                 <local:TextBoxLabel LabelText="tWRWRSCDLR" Value="{Binding Path=tWRWRSCDLR}"/>
                 <local:TextBoxLabel LabelText="tWRRDSCDLR" Value="{Binding Path=tWRRDSCDLR}"/>
                 <local:TextBoxLabel LabelText="tREF" Value="{Binding Path=tREF}"/>
@@ -67,7 +67,7 @@
                 <local:TextBoxLabel LabelText="tPHYWRL" Value="{Binding Path=tPHYWRLAT}"/>
                 <local:TextBoxLabel LabelText="tPHYRDL" Value="{Binding Path=tPHYRDLAT}"/>
                 <local:TextBoxLabel LabelText="tRDDATA" Value="{Binding Path=tRDDATA}"/>
-                <local:TextBoxLabel LabelText="tSTAGLR" Value="{Binding Path=tSTAGLR}" ToolTip="0- Disabled"/>
+                <local:TextBoxLabel LabelText="tSTAGLR" Value="{Binding Path=tSTAGLR_Display}"/>
                 <local:TextBoxLabel LabelText="tWRMPR" Value="{Binding Path=tWRMPR}"/>
             </WrapPanel>
         </StackPanel>

@@ -92,7 +92,7 @@ namespace RTCSharp
             }
 
             this.BGS = BGS != 0x87654321;
-            this.BGSA = BGSA != 0x111107F1;
+            this.BGSA = BGSA == 0x111107F1;
 
             Preamble2T = (DramConfiguration & 0x1000) >> 12 != 0;
             GDM = (DramConfiguration & 0x800) >> 11 != 0;
@@ -195,10 +195,14 @@ namespace RTCSharp
         }
 
         public bool BGS { get; private set; }
+        public string BGS_Display => BGS ? "Enabled" : "Disabled";
         public bool BGSA { get; private set; }
+        public string BGSA_Display => BGSA ? "Enabled" : "Disabled";
         public bool Preamble2T { get; private set; }
         public bool GDM { get; private set; }
+        public string GDM_Display => GDM ? "Enabled" : "Disabled";
         public bool Cmd2T { get; private set; }
+        public string CmdRate => Cmd2T ? "2T" : "1T";
         public uint MEMCLK { get; private set; }
         public uint tRCDWR { get; private set; }
         public uint tRCDRD { get; private set; }
@@ -221,12 +225,14 @@ namespace RTCSharp
         public uint tWR { get; private set; }
         public uint tRCPage { get; private set; }
         public uint tRDRDBAN { get; private set; }
+        public string tRDRDBAN_Display => tRDRDBAN == 2 ? "Ban 2&3" : (tRDRDBAN == 1 ? "Ban 2" : "Disabled");
         public uint tRDRDSCL { get; private set; }
         public uint tRDRDSCDLR { get; private set; }
         public uint tRDRDSC { get; private set; }
         public uint tRDRDSD { get; private set; }
         public uint tRDRDDD { get; private set; }
         public uint tWRWRBAN { get; private set; }
+        public string tWRWRBAN_Display => tWRWRBAN == 2 ? "Ban 2&3" : (tWRWRBAN == 1 ? "Ban 2" : "Disabled");
         public uint tWRWRSCL { get; private set; }
         public uint tWRWRSCDLR { get; private set; }
         public uint tWRWRSC { get; private set; }
@@ -254,8 +260,11 @@ namespace RTCSharp
         public uint tRFC { get; private set; }
         public uint tRFCCT { get; private set; }
         public uint tSTAG4LR { get; private set; }
+        public string tSTAG4LR_Display => tSTAG4LR == 0 ? "Disabled" : tSTAG4LR.ToString();
         public uint tSTAG2LR { get; private set; }
+        public string tSTAG2LR_Display => tSTAG2LR == 0 ? "Disabled" : tSTAG2LR.ToString();
         public uint tSTAGLR { get; private set; }
+        public string tSTAGLR_Display => tSTAGLR == 0 ? "Disabled" : tSTAGLR.ToString();
         public uint tWRMPR { get; private set; }
     }
 }
