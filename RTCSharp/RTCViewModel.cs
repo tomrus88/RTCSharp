@@ -225,14 +225,14 @@ namespace RTCSharp
         public uint tWR { get; private set; }
         public uint tRCPage { get; private set; }
         public uint tRDRDBAN { get; private set; }
-        public string tRDRDBAN_Display => tRDRDBAN == 2 ? "Ban 2&3" : (tRDRDBAN == 1 ? "Ban 2" : "Disabled");
+        public string tRDRDBAN_Display => tRDRDBAN == 0 ? "Disabled" : (tRDRDBAN == 1 ? "Ban 2" : "Ban 2&3");
         public uint tRDRDSCL { get; private set; }
         public uint tRDRDSCDLR { get; private set; }
         public uint tRDRDSC { get; private set; }
         public uint tRDRDSD { get; private set; }
         public uint tRDRDDD { get; private set; }
         public uint tWRWRBAN { get; private set; }
-        public string tWRWRBAN_Display => tWRWRBAN == 2 ? "Ban 2&3" : (tWRWRBAN == 1 ? "Ban 2" : "Disabled");
+        public string tWRWRBAN_Display => tWRWRBAN == 0 ? "Disabled" : (tWRWRBAN == 1 ? "Ban 2" : "Ban 2&3");
         public uint tWRWRSCL { get; private set; }
         public uint tWRWRSCDLR { get; private set; }
         public uint tWRWRSC { get; private set; }
