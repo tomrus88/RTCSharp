@@ -5,17 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTCSharp"
         mc:Ignorable="d"
-        Title="Ryzen Timing Checker 2.0" Height="640" Width="530" ResizeMode="NoResize">
+        Title="Ryzen Timing Checker 2.0" Height="775" Width="530" ResizeMode="NoResize">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-            <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="70">
+            <WrapPanel Orientation="Horizontal" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5">
                 <local:TextBoxLabel LabelText="MEMCLK Ratio" Value="{Binding Path=MEMCLK}"/>
-                <local:TextBoxLabel LabelText="Cmd2t" Value="{Binding Path=CmdRate}"/>
                 <local:TextBoxLabel LabelText="GearDownMode" Value="{Binding Path=GDM_Display}"/>
+                <local:TextBoxLabel LabelText="Cmd2t" Value="{Binding Path=CmdRate}"/>
                 <local:TextBoxLabel LabelText="BankGroupSwap" Value="{Binding Path=BGS_Display}"/>
                 <local:TextBoxLabel LabelText="BankGroupSwapAlt" Value="{Binding Path=BGSA_Display}"/>
+                <local:TextBoxLabel LabelText="ProcODT" Value="{Binding Path=ProcODT}"/>
+                <local:TextBoxLabel LabelText="AddrCmdSetup" Value="{Binding Path=AddrCmdSetup}"/>
+                <local:TextBoxLabel LabelText="CsOdtSetup" Value="{Binding Path=CsOdtSetup}"/>
+                <local:TextBoxLabel LabelText="CkeSetup" Value="{Binding Path=CkeSetup}"/>
+                <local:TextBoxLabel LabelText="RttNom" Value="{Binding Path=RttNom}"/>
+                <local:TextBoxLabel LabelText="RttWr" Value="{Binding Path=RttWr}"/>
+                <local:TextBoxLabel LabelText="RttPark" Value="{Binding Path=RttPark}"/>
+                <local:TextBoxLabel LabelText="ClkDrvStr" Value="{Binding Path=ClkDrvStrength}"/>
+                <local:TextBoxLabel LabelText="AddrCmdDrvStr" Value="{Binding Path=AddrCmdDrvStrength}"/>
+                <local:TextBoxLabel LabelText="CsOdtDrvStr" Value="{Binding Path=CsOdtDrvStrength}"/>
+                <local:TextBoxLabel LabelText="CkeDrvStr" Value="{Binding Path=CkeDrvStrength}"/>
             </WrapPanel>
-            <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="515">
+            <WrapPanel Orientation="Vertical" ItemHeight="30" ItemWidth="165" Margin="5,5,5,5" Height="540">
                 <local:TextBoxLabel LabelText="tCL" Value="{Binding Path=tCL}"/>
                 <local:TextBoxLabel LabelText="tRCDWR" Value="{Binding Path=tRCDWR}"/>
                 <local:TextBoxLabel LabelText="tRCDRD" Value="{Binding Path=tRCDRD}"/>
@@ -36,6 +47,8 @@
 
                 <local:TextBoxLabel LabelText="tRFC" Value="{Binding Path=tRFC}"/>
                 <local:TextBoxLabel LabelText="tRFC (ns)" Value="{Binding Path=tRFCCT}"/>
+                <local:TextBoxLabel LabelText="tRFC2" Value="{Binding Path=tRFC2}"/>
+                <local:TextBoxLabel LabelText="tRFC4" Value="{Binding Path=tRFC4}"/>
                 <local:TextBoxLabel LabelText="tCWL" Value="{Binding Path=tCWL}"/>
                 <local:TextBoxLabel LabelText="tRTP" Value="{Binding Path=tRTP}"/>
                 <local:TextBoxLabel LabelText="tRDWR" Value="{Binding Path=tRDWR}"/>

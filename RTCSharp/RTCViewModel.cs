@@ -11,7 +11,7 @@ namespace RTCSharp
         private const bool SMUSlow = false;
         private int SMUDelay = SMUSlow ? 60 : 10;
 
-        public RTCViewModel()
+        public unsafe RTCViewModel()
         {
             ols = new Ols();
 
@@ -31,7 +31,7 @@ namespace RTCSharp
 
             uint CPUFMS = eax & 0xFFFF00;
 
-            if (CPUFMS != 0x00800F00 && CPUFMS != 0x00810F00)
+            if (CPUFMS != 0x00800F00 && CPUFMS != 0x00810F00 && CPUFMS != 0x00870F00)
             {
                 ols.Dispose();
                 throw new ApplicationException("The software only supports RV & ZP based Ryzen CPUs");
@@ -181,6 +181,950 @@ namespace RTCSharp
 
             tWRMPR = (DramTiming35 & 0x3F000000) >> 24;
 
+            ols.WritePciConfigDword(0x00, 0xB8, 0x3B10528);
+            ols.WritePciConfigDword(0x00, 0xBC, 0x02);
+            ols.WritePciConfigDword(0x00, 0xB8, 0x3B10598);
+            uint somethingVersion = ols.ReadPciConfigDword(0, 0xBC); // some agesa version? 0x195200, 0x195300...
+
+            uint eax2 = 0, ebx2 = 0, ecx2 = 0, edx2 = 0;
+            ols.CpuidPx(0x80000001, ref eax2, ref ebx2, ref ecx2, ref edx2, (UIntPtr)0x01);
+            eax2 &= 0xFFFF00;
+            ebx2 = (ebx2 & 0xF0000000) >> 28;
+
+            uint someOffset2 = 0;
+
+            if (ebx2 == 7)
+                someOffset2 = 0x2180;
+            else if (ebx2 == 2)
+                someOffset2 = 0x100;
+            else
+                someOffset2 = 0x00;
+
+            if (eax2 == 0x810F00) // Raven Ridge?
+            {
+                this.ProcODT = "N/A";
+                this.RttNom = "N/A";
+                this.RttWr = "N/A";
+                this.RttPark = "N/A";
+                this.AddrCmdSetup = "N/A";
+                this.CsOdtSetup = "N/A";
+                this.CkeSetup = "N/A";
+                this.ClkDrvStrength = "N/A";
+                this.AddrCmdDrvStrength = "N/A";
+                this.CsOdtDrvStrength = "N/A";
+                this.CkeDrvStrength = "N/A";
+            }
+            else if (false/*eax2 == 0x800F00 && somethingVersion < 0x195300*/) // Zeppelin? & some version < X
+            {
+                this.ProcODT = "N/A";
+                this.RttNom = "N/A";
+                this.RttWr = "N/A";
+                this.RttPark = "N/A";
+                this.AddrCmdSetup = "N/A";
+                this.CsOdtSetup = "N/A";
+                this.CkeSetup = "N/A";
+                this.ClkDrvStrength = "N/A";
+                this.AddrCmdDrvStrength = "N/A";
+                this.CsOdtDrvStrength = "N/A";
+                this.CkeDrvStrength = "N/A";
+            }
+            else if (ebx2 == 1 || ebx2 == 3 || ebx2 == 4)
+            {
+                this.ProcODT = "N/A";
+                this.RttNom = "N/A";
+                this.RttWr = "N/A";
+                this.RttPark = "N/A";
+                this.AddrCmdSetup = "N/A";
+                this.CsOdtSetup = "N/A";
+                this.CkeSetup = "N/A";
+                this.ClkDrvStrength = "N/A";
+                this.AddrCmdDrvStrength = "N/A";
+                this.CsOdtDrvStrength = "N/A";
+                this.CkeDrvStrength = "N/A";
+            }
+            else
+            {
+                ols.WritePciConfigDword(0x00, 0xB8, 0x3B10528);
+                ols.WritePciConfigDword(0x00, 0xBC, 0x2C);
+                //ols.WritePciConfigDword(0x00, 0xBC, 0x25);
+                ols.WritePciConfigDword(0x00, 0xB8, 0x3B1059C);
+                uint x = ols.ReadPciConfigDword(0, 0xBC);
+                ulong num26 = x - someOffset2;
+
+                Ols.IsInpOutDriverOpen2();
+
+                //uint num27 = 0xB1;
+                //uint physLong1 = Ols.GetPhysLong2(new UIntPtr(num26 + num27));
+                //uint num28 = 0xB5;
+                //uint physLong2 = Ols.GetPhysLong2(new UIntPtr(num26 + num28));
+                //uint num29 = 0xBA;
+                //uint physLong3 = Ols.GetPhysLong2(new UIntPtr(num26 + num29));
+
+                uint num27 = 0xB1;
+                uint physLong1 = ols.GetPhysLong(new UIntPtr(num26 + num27));
+                uint num28 = 0xB5;
+                uint physLong2 = ols.GetPhysLong(new UIntPtr(num26 + num28));
+                uint num29 = 0xBA;
+                uint physLong3 = ols.GetPhysLong(new UIntPtr(num26 + num29));
+
+                uint addrCmdSetup = physLong1 & 0xFF;
+                // addrCmdSetup / 32, addrCmdSetup % 32
+                switch (addrCmdSetup)
+                {
+                    case 0:
+                        this.AddrCmdSetup = "0/0";
+                        break;
+                    case 1:
+                        this.AddrCmdSetup = "0/1";
+                        break;
+                    case 2:
+                        this.AddrCmdSetup = "0/2";
+                        break;
+                    case 3:
+                        this.AddrCmdSetup = "0/3";
+                        break;
+                    case 4:
+                        this.AddrCmdSetup = "0/4";
+                        break;
+                    case 5:
+                        this.AddrCmdSetup = "0/5";
+                        break;
+                    case 6:
+                        this.AddrCmdSetup = "0/6";
+                        break;
+                    case 7:
+                        this.AddrCmdSetup = "0/7";
+                        break;
+                    case 8:
+                        this.AddrCmdSetup = "0/8";
+                        break;
+                    case 9:
+                        this.AddrCmdSetup = "0/9";
+                        break;
+                    case 10:
+                        this.AddrCmdSetup = "0/10";
+                        break;
+                    case 11:
+                        this.AddrCmdSetup = "0/11";
+                        break;
+                    case 12:
+                        this.AddrCmdSetup = "0/12";
+                        break;
+                    case 13:
+                        this.AddrCmdSetup = "0/13";
+                        break;
+                    case 14:
+                        this.AddrCmdSetup = "0/14";
+                        break;
+                    case 15:
+                        this.AddrCmdSetup = "0/15";
+                        break;
+                    case 16:
+                        this.AddrCmdSetup = "0/16";
+                        break;
+                    case 17:
+                        this.AddrCmdSetup = "0/17";
+                        break;
+                    case 18:
+                        this.AddrCmdSetup = "0/18";
+                        break;
+                    case 19:
+                        this.AddrCmdSetup = "0/19";
+                        break;
+                    case 20:
+                        this.AddrCmdSetup = "0/20";
+                        break;
+                    case 21:
+                        this.AddrCmdSetup = "0/21";
+                        break;
+                    case 22:
+                        this.AddrCmdSetup = "0/22";
+                        break;
+                    case 23:
+                        this.AddrCmdSetup = "0/23";
+                        break;
+                    case 24:
+                        this.AddrCmdSetup = "0/24";
+                        break;
+                    case 25:
+                        this.AddrCmdSetup = "0/25";
+                        break;
+                    case 26:
+                        this.AddrCmdSetup = "0/26";
+                        break;
+                    case 27:
+                        this.AddrCmdSetup = "0/27";
+                        break;
+                    case 28:
+                        this.AddrCmdSetup = "0/28";
+                        break;
+                    case 29:
+                        this.AddrCmdSetup = "0/29";
+                        break;
+                    case 30:
+                        this.AddrCmdSetup = "0/30";
+                        break;
+                    case 31:
+                        this.AddrCmdSetup = "0/31";
+                        break;
+                    case 32:
+                        this.AddrCmdSetup = "1/0";
+                        break;
+                    case 33:
+                        this.AddrCmdSetup = "1/1";
+                        break;
+                    case 34:
+                        this.AddrCmdSetup = "1/2";
+                        break;
+                    case 35:
+                        this.AddrCmdSetup = "1/3";
+                        break;
+                    case 36:
+                        this.AddrCmdSetup = "1/4";
+                        break;
+                    case 37:
+                        this.AddrCmdSetup = "1/5";
+                        break;
+                    case 38:
+                        this.AddrCmdSetup = "1/6";
+                        break;
+                    case 39:
+                        this.AddrCmdSetup = "1/7";
+                        break;
+                    case 40:
+                        this.AddrCmdSetup = "1/8";
+                        break;
+                    case 41:
+                        this.AddrCmdSetup = "1/9";
+                        break;
+                    case 42:
+                        this.AddrCmdSetup = "1/10";
+                        break;
+                    case 43:
+                        this.AddrCmdSetup = "1/11";
+                        break;
+                    case 44:
+                        this.AddrCmdSetup = "1/12";
+                        break;
+                    case 45:
+                        this.AddrCmdSetup = "1/13";
+                        break;
+                    case 46:
+                        this.AddrCmdSetup = "1/14";
+                        break;
+                    case 47:
+                        this.AddrCmdSetup = "1/15";
+                        break;
+                    case 48:
+                        this.AddrCmdSetup = "1/16";
+                        break;
+                    case 49:
+                        this.AddrCmdSetup = "1/17";
+                        break;
+                    case 50:
+                        this.AddrCmdSetup = "1/18";
+                        break;
+                    case 51:
+                        this.AddrCmdSetup = "1/19";
+                        break;
+                    case 52:
+                        this.AddrCmdSetup = "1/20";
+                        break;
+                    case 53:
+                        this.AddrCmdSetup = "1/21";
+                        break;
+                    case 54:
+                        this.AddrCmdSetup = "1/22";
+                        break;
+                    case 55:
+                        this.AddrCmdSetup = "1/23";
+                        break;
+                    case 56:
+                        this.AddrCmdSetup = "1/24";
+                        break;
+                    case 57:
+                        this.AddrCmdSetup = "1/25";
+                        break;
+                    case 58:
+                        this.AddrCmdSetup = "1/26";
+                        break;
+                    case 59:
+                        this.AddrCmdSetup = "1/27";
+                        break;
+                    case 60:
+                        this.AddrCmdSetup = "1/28";
+                        break;
+                    case 61:
+                        this.AddrCmdSetup = "1/29";
+                        break;
+                    case 62:
+                        this.AddrCmdSetup = "1/30";
+                        break;
+                    case 63:
+                        this.AddrCmdSetup = "1/31";
+                        break;
+                }
+
+                uint csOdtSetup = (physLong1 & 0xFF00) >> 8;
+                // csOdtSetup / 32, csOdtSetup % 32
+                switch (csOdtSetup)
+                {
+                    case 0:
+                        this.CsOdtSetup = "0/0";
+                        break;
+                    case 1:
+                        this.CsOdtSetup = "0/1";
+                        break;
+                    case 2:
+                        this.CsOdtSetup = "0/2";
+                        break;
+                    case 3:
+                        this.CsOdtSetup = "0/3";
+                        break;
+                    case 4:
+                        this.CsOdtSetup = "0/4";
+                        break;
+                    case 5:
+                        this.CsOdtSetup = "0/5";
+                        break;
+                    case 6:
+                        this.CsOdtSetup = "0/6";
+                        break;
+                    case 7:
+                        this.CsOdtSetup = "0/7";
+                        break;
+                    case 8:
+                        this.CsOdtSetup = "0/8";
+                        break;
+                    case 9:
+                        this.CsOdtSetup = "0/9";
+                        break;
+                    case 10:
+                        this.CsOdtSetup = "0/10";
+                        break;
+                    case 11:
+                        this.CsOdtSetup = "0/11";
+                        break;
+                    case 12:
+                        this.CsOdtSetup = "0/12";
+                        break;
+                    case 13:
+                        this.CsOdtSetup = "0/13";
+                        break;
+                    case 14:
+                        this.CsOdtSetup = "0/14";
+                        break;
+                    case 15:
+                        this.CsOdtSetup = "0/15";
+                        break;
+                    case 16:
+                        this.CsOdtSetup = "0/16";
+                        break;
+                    case 17:
+                        this.CsOdtSetup = "0/17";
+                        break;
+                    case 18:
+                        this.CsOdtSetup = "0/18";
+                        break;
+                    case 19:
+                        this.CsOdtSetup = "0/19";
+                        break;
+                    case 20:
+                        this.CsOdtSetup = "0/20";
+                        break;
+                    case 21:
+                        this.CsOdtSetup = "0/21";
+                        break;
+                    case 22:
+                        this.CsOdtSetup = "0/22";
+                        break;
+                    case 23:
+                        this.CsOdtSetup = "0/23";
+                        break;
+                    case 24:
+                        this.CsOdtSetup = "0/24";
+                        break;
+                    case 25:
+                        this.CsOdtSetup = "0/25";
+                        break;
+                    case 26:
+                        this.CsOdtSetup = "0/26";
+                        break;
+                    case 27:
+                        this.CsOdtSetup = "0/27";
+                        break;
+                    case 28:
+                        this.CsOdtSetup = "0/28";
+                        break;
+                    case 29:
+                        this.CsOdtSetup = "0/29";
+                        break;
+                    case 30:
+                        this.CsOdtSetup = "0/30";
+                        break;
+                    case 31:
+                        this.CsOdtSetup = "0/31";
+                        break;
+                    case 32:
+                        this.CsOdtSetup = "1/0";
+                        break;
+                    case 33:
+                        this.CsOdtSetup = "1/1";
+                        break;
+                    case 34:
+                        this.CsOdtSetup = "1/2";
+                        break;
+                    case 35:
+                        this.CsOdtSetup = "1/3";
+                        break;
+                    case 36:
+                        this.CsOdtSetup = "1/4";
+                        break;
+                    case 37:
+                        this.CsOdtSetup = "1/5";
+                        break;
+                    case 38:
+                        this.CsOdtSetup = "1/6";
+                        break;
+                    case 39:
+                        this.CsOdtSetup = "1/7";
+                        break;
+                    case 40:
+                        this.CsOdtSetup = "1/8";
+                        break;
+                    case 41:
+                        this.CsOdtSetup = "1/9";
+                        break;
+                    case 42:
+                        this.CsOdtSetup = "1/10";
+                        break;
+                    case 43:
+                        this.CsOdtSetup = "1/11";
+                        break;
+                    case 44:
+                        this.CsOdtSetup = "1/12";
+                        break;
+                    case 45:
+                        this.CsOdtSetup = "1/13";
+                        break;
+                    case 46:
+                        this.CsOdtSetup = "1/14";
+                        break;
+                    case 47:
+                        this.CsOdtSetup = "1/15";
+                        break;
+                    case 48:
+                        this.CsOdtSetup = "1/16";
+                        break;
+                    case 49:
+                        this.CsOdtSetup = "1/17";
+                        break;
+                    case 50:
+                        this.CsOdtSetup = "1/18";
+                        break;
+                    case 51:
+                        this.CsOdtSetup = "1/19";
+                        break;
+                    case 52:
+                        this.CsOdtSetup = "1/20";
+                        break;
+                    case 53:
+                        this.CsOdtSetup = "1/21";
+                        break;
+                    case 54:
+                        this.CsOdtSetup = "1/22";
+                        break;
+                    case 55:
+                        this.CsOdtSetup = "1/23";
+                        break;
+                    case 56:
+                        this.CsOdtSetup = "1/24";
+                        break;
+                    case 57:
+                        this.CsOdtSetup = "1/25";
+                        break;
+                    case 58:
+                        this.CsOdtSetup = "1/26";
+                        break;
+                    case 59:
+                        this.CsOdtSetup = "1/27";
+                        break;
+                    case 60:
+                        this.CsOdtSetup = "1/28";
+                        break;
+                    case 61:
+                        this.CsOdtSetup = "1/29";
+                        break;
+                    case 62:
+                        this.CsOdtSetup = "1/30";
+                        break;
+                    case 63:
+                        this.CsOdtSetup = "1/31";
+                        break;
+                }
+
+                uint ckeSetup = (physLong1 & 0xFF0000) >> 16;
+                // ckeSetup / 32, ckeSetup % 32
+                switch (ckeSetup)
+                {
+                    case 0:
+                        this.CkeSetup = "0/0";
+                        break;
+                    case 1:
+                        this.CkeSetup = "0/1";
+                        break;
+                    case 2:
+                        this.CkeSetup = "0/2";
+                        break;
+                    case 3:
+                        this.CkeSetup = "0/3";
+                        break;
+                    case 4:
+                        this.CkeSetup = "0/4";
+                        break;
+                    case 5:
+                        this.CkeSetup = "0/5";
+                        break;
+                    case 6:
+                        this.CkeSetup = "0/6";
+                        break;
+                    case 7:
+                        this.CkeSetup = "0/7";
+                        break;
+                    case 8:
+                        this.CkeSetup = "0/8";
+                        break;
+                    case 9:
+                        this.CkeSetup = "0/9";
+                        break;
+                    case 10:
+                        this.CkeSetup = "0/10";
+                        break;
+                    case 11:
+                        this.CkeSetup = "0/11";
+                        break;
+                    case 12:
+                        this.CkeSetup = "0/12";
+                        break;
+                    case 13:
+                        this.CkeSetup = "0/13";
+                        break;
+                    case 14:
+                        this.CkeSetup = "0/14";
+                        break;
+                    case 15:
+                        this.CkeSetup = "0/15";
+                        break;
+                    case 16:
+                        this.CkeSetup = "0/16";
+                        break;
+                    case 17:
+                        this.CkeSetup = "0/17";
+                        break;
+                    case 18:
+                        this.CkeSetup = "0/18";
+                        break;
+                    case 19:
+                        this.CkeSetup = "0/19";
+                        break;
+                    case 20:
+                        this.CkeSetup = "0/20";
+                        break;
+                    case 21:
+                        this.CkeSetup = "0/21";
+                        break;
+                    case 22:
+                        this.CkeSetup = "0/22";
+                        break;
+                    case 23:
+                        this.CkeSetup = "0/23";
+                        break;
+                    case 24:
+                        this.CkeSetup = "0/24";
+                        break;
+                    case 25:
+                        this.CkeSetup = "0/25";
+                        break;
+                    case 26:
+                        this.CkeSetup = "0/26";
+                        break;
+                    case 27:
+                        this.CkeSetup = "0/27";
+                        break;
+                    case 28:
+                        this.CkeSetup = "0/28";
+                        break;
+                    case 29:
+                        this.CkeSetup = "0/29";
+                        break;
+                    case 30:
+                        this.CkeSetup = "0/30";
+                        break;
+                    case 31:
+                        this.CkeSetup = "0/31";
+                        break;
+                    case 32:
+                        this.CkeSetup = "1/0";
+                        break;
+                    case 33:
+                        this.CkeSetup = "1/1";
+                        break;
+                    case 34:
+                        this.CkeSetup = "1/2";
+                        break;
+                    case 35:
+                        this.CkeSetup = "1/3";
+                        break;
+                    case 36:
+                        this.CkeSetup = "1/4";
+                        break;
+                    case 37:
+                        this.CkeSetup = "1/5";
+                        break;
+                    case 38:
+                        this.CkeSetup = "1/6";
+                        break;
+                    case 39:
+                        this.CkeSetup = "1/7";
+                        break;
+                    case 40:
+                        this.CkeSetup = "1/8";
+                        break;
+                    case 41:
+                        this.CkeSetup = "1/9";
+                        break;
+                    case 42:
+                        this.CkeSetup = "1/10";
+                        break;
+                    case 43:
+                        this.CkeSetup = "1/11";
+                        break;
+                    case 44:
+                        this.CkeSetup = "1/12";
+                        break;
+                    case 45:
+                        this.CkeSetup = "1/13";
+                        break;
+                    case 46:
+                        this.CkeSetup = "1/14";
+                        break;
+                    case 47:
+                        this.CkeSetup = "1/15";
+                        break;
+                    case 48:
+                        this.CkeSetup = "1/16";
+                        break;
+                    case 49:
+                        this.CkeSetup = "1/17";
+                        break;
+                    case 50:
+                        this.CkeSetup = "1/18";
+                        break;
+                    case 51:
+                        this.CkeSetup = "1/19";
+                        break;
+                    case 52:
+                        this.CkeSetup = "1/20";
+                        break;
+                    case 53:
+                        this.CkeSetup = "1/21";
+                        break;
+                    case 54:
+                        this.CkeSetup = "1/22";
+                        break;
+                    case 55:
+                        this.CkeSetup = "1/23";
+                        break;
+                    case 56:
+                        this.CkeSetup = "1/24";
+                        break;
+                    case 57:
+                        this.CkeSetup = "1/25";
+                        break;
+                    case 58:
+                        this.CkeSetup = "1/26";
+                        break;
+                    case 59:
+                        this.CkeSetup = "1/27";
+                        break;
+                    case 60:
+                        this.CkeSetup = "1/28";
+                        break;
+                    case 61:
+                        this.CkeSetup = "1/29";
+                        break;
+                    case 62:
+                        this.CkeSetup = "1/30";
+                        break;
+                    case 63:
+                        this.CkeSetup = "1/31";
+                        break;
+                }
+
+                uint clkDrvStrength = (physLong1 & 0xFF000000) >> 24;
+                if (clkDrvStrength <= 7)
+                {
+                    switch (clkDrvStrength)
+                    {
+                        case 0:
+                            this.ClkDrvStrength = "120.0Ω";
+                            break;
+                        case 1:
+                            this.ClkDrvStrength = "60.0Ω";
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            this.ClkDrvStrength = "40.0Ω";
+                            break;
+                        case 7:
+                            this.ClkDrvStrength = "30.0Ω";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (clkDrvStrength != 15)
+                {
+                    if (clkDrvStrength == 31)
+                        this.ClkDrvStrength = "20.0Ω";
+                }
+                else
+                    this.ClkDrvStrength = "24.0Ω";
+
+                uint addrCmdDrvStrength = physLong2 & 0xFF;
+                if (addrCmdDrvStrength <= 7)
+                {
+                    switch (addrCmdDrvStrength)
+                    {
+                        case 0:
+                            this.AddrCmdDrvStrength = "120.0Ω";
+                            break;
+                        case 1:
+                            this.AddrCmdDrvStrength = "60.0Ω";
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            this.AddrCmdDrvStrength = "40.0Ω";
+                            break;
+                        case 7:
+                            this.AddrCmdDrvStrength = "30.0Ω";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (addrCmdDrvStrength != 15)
+                {
+                    if (addrCmdDrvStrength == 31)
+                        this.AddrCmdDrvStrength = "20.0Ω";
+                }
+                else
+                    this.AddrCmdDrvStrength = "24.0Ω";
+
+                uint csOdtDrvStrength = (physLong2 & 0xFF00) >> 8;
+                if (csOdtDrvStrength <= 7)
+                {
+                    switch (csOdtDrvStrength)
+                    {
+                        case 0:
+                            this.CsOdtDrvStrength = "120.0Ω";
+                            break;
+                        case 1:
+                            this.CsOdtDrvStrength = "60.0Ω";
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            this.CsOdtDrvStrength = "40.0Ω";
+                            break;
+                        case 7:
+                            this.CsOdtDrvStrength = "30.0Ω";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (csOdtDrvStrength != 15)
+                {
+                    if (csOdtDrvStrength == 31)
+                        this.CsOdtDrvStrength = "20.0Ω";
+                }
+                else
+                    this.CsOdtDrvStrength = "24.0Ω";
+
+                uint ckeDrvStrength = (physLong2 & 0xFF0000) >> 16;
+                if (ckeDrvStrength <= 7)
+                {
+                    switch (ckeDrvStrength)
+                    {
+                        case 0:
+                            this.CkeDrvStrength = "120.0Ω";
+                            break;
+                        case 1:
+                            this.CkeDrvStrength = "60.0Ω";
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            this.CkeDrvStrength = "40.0Ω";
+                            break;
+                        case 7:
+                            this.CkeDrvStrength = "30.0Ω";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (ckeDrvStrength != 15)
+                {
+                    if (ckeDrvStrength == 31)
+                        this.CkeDrvStrength = "20.0Ω";
+                }
+                else
+                    this.CkeDrvStrength = "24.0Ω";
+
+                // physLong2 byte 4?
+
+                uint rttNom = physLong3 & 0xFF;
+                switch (rttNom)
+                {
+                    case 0:
+                        this.RttNom = "Disabled";
+                        break;
+                    case 1:
+                        this.RttNom = "60.0Ω";
+                        break;
+                    case 2:
+                        this.RttNom = "120.0Ω";
+                        break;
+                    case 3:
+                        this.RttNom = "40.0Ω";
+                        break;
+                    case 4:
+                        this.RttNom = "240.0Ω";
+                        break;
+                    case 5:
+                        this.RttNom = "48.0Ω";
+                        break;
+                    case 6:
+                        this.RttNom = "80.0Ω";
+                        break;
+                    case 7:
+                        this.RttNom = "34.3Ω";
+                        break;
+                }
+
+                uint rttWr = (physLong3 & 0xFF00) >> 8;
+                switch (rttWr)
+                {
+                    case 0:
+                        this.RttWr = "Disabled";
+                        break;
+                    case 1:
+                        this.RttWr = "120.0Ω";
+                        break;
+                    case 2:
+                        this.RttWr = "240.0Ω";
+                        break;
+                    case 3:
+                        this.RttWr = "Hi-Z";
+                        break;
+                    case 4:
+                        this.RttWr = "80.0Ω";
+                        break;
+                }
+
+                uint rttPark = (physLong3 & 0xFF0000) >> 16;
+                switch (rttPark)
+                {
+                    case 0:
+                        this.RttPark = "Disabled";
+                        break;
+                    case 1:
+                        this.RttPark = "60.0Ω";
+                        break;
+                    case 2:
+                        this.RttPark = "120.0Ω";
+                        break;
+                    case 3:
+                        this.RttPark = "40.0Ω";
+                        break;
+                    case 4:
+                        this.RttPark = "240.0Ω";
+                        break;
+                    case 5:
+                        this.RttPark = "48.0Ω";
+                        break;
+                    case 6:
+                        this.RttPark = "80.0Ω";
+                        break;
+                    case 7:
+                        this.RttPark = "34.3Ω";
+                        break;
+                }
+
+                uint procODT = (physLong3 & 0xFF000000) >> 24;
+                switch (procODT)
+                {
+                    case 8:
+                        this.ProcODT = "120.0Ω";
+                        break;
+                    case 9:
+                        this.ProcODT = "96.0Ω";
+                        break;
+                    case 10:
+                        this.ProcODT = "80.0Ω";
+                        break;
+                    case 11:
+                        this.ProcODT = "68.6Ω";
+                        break;
+                    default:
+                        switch (procODT)
+                        {
+                            case 24:
+                                this.ProcODT = "60.0Ω";
+                                break;
+                            case 25:
+                                this.ProcODT = "53.3Ω";
+                                break;
+                            case 26:
+                                this.ProcODT = "48.0Ω";
+                                break;
+                            case 27:
+                                this.ProcODT = "43.6Ω";
+                                break;
+                            default:
+                                switch (procODT)
+                                {
+                                    case 56:
+                                        this.ProcODT = "40.0Ω";
+                                        break;
+                                    case 57:
+                                        this.ProcODT = "36.9Ω";
+                                        break;
+                                    case 58:
+                                        this.ProcODT = "34.3Ω";
+                                        break;
+                                    case 59:
+                                        this.ProcODT = "32.0Ω";
+                                        break;
+                                    case 62:
+                                        this.ProcODT = "30.0Ω";
+                                        break;
+                                    case 63:
+                                        this.ProcODT = "28.2Ω";
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                }
+            }
+
+            ols.WritePciConfigDword(0x0, 0xB8, 0x3B10528);
+            ols.WritePciConfigDword(0x0, 0xBC, 0x02);
             ols.WritePciConfigDword(0x00, 0xB8, SMUORG);
             Thread.Sleep(SMUDelay);
 
@@ -266,5 +1210,17 @@ namespace RTCSharp
         public uint tSTAGLR { get; private set; }
         public string tSTAGLR_Display => tSTAGLR == 0 ? "Disabled" : tSTAGLR.ToString();
         public uint tWRMPR { get; private set; }
+
+        public string ProcODT { get; private set; }
+        public string RttNom { get; private set; }
+        public string RttWr { get; private set; }
+        public string RttPark { get; private set; }
+        public string AddrCmdSetup { get; private set; }
+        public string CsOdtSetup { get; private set; }
+        public string CkeSetup { get; private set; }
+        public string ClkDrvStrength { get; private set; }
+        public string AddrCmdDrvStrength { get; private set; }
+        public string CsOdtDrvStrength { get; private set; }
+        public string CkeDrvStrength { get; private set; }
     }
 }

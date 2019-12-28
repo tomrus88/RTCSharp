@@ -8,6 +8,8 @@
 //-----------------------------------------------------------------------------
 // This is support library for WinRing0 1.3.x.
 
+#define _PHYSICAL_MEMORY_SUPPORT
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -425,6 +427,47 @@ namespace OpenLibSys
 
         public _ReadPhysicalMemory ReadPhysicalMemory;
         public _WritePhysicalMemory WritePhysicalMemory;
+
+        public uint GetPhysLong(UIntPtr address)
+        {
+            unsafe
+            {
+                byte* buf = stackalloc byte[4];
+
+                //Console.ReadKey();
+
+                uint res2 = 0;
+
+                var res = ReadPhysicalMemory(address, (byte*)&res2, 1, 4);
+                //var res = ReadPhysicalMemory(address, buf, 1, 4);
+
+                int error = Marshal.GetLastWin32Error();
+
+                return res2;
+                //return *(uint*)buf;
+            }
+        }
+
+        [DllImport("inpoutx64.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsInpOutDriverOpen();
+
+        [DllImport("inpoutx64.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetPhysLong(UIntPtr memAddress, out uint Data);
+
+        public static bool IsInpOutDriverOpen2()
+        {
+            return IsInpOutDriverOpen();
+        }
+
+        public static unsafe uint GetPhysLong2(UIntPtr memAddress)
+        {
+            uint num;
+            if (GetPhysLong(memAddress, out num))
+                return num;
+            return 0;
+        }
 #endif
     }
 }
